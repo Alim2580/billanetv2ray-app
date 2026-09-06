@@ -428,7 +428,7 @@
             if (isVoiceMuted) return;
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
-                const welcomeText = "Hamare VPN ko istemal karne ke liye aapka bahut-bahut shokriya hai. Dhanyawad!";
+                const welcomeText = "Assalamu Alaikum Hamare VPN ko istemal karne ke liye aapka bahut-bahut shokriya hai. Dhanyawad!";
                 const utterance = new SpeechSynthesisUtterance(welcomeText);
                 utterance.lang = 'hi-IN';
                 utterance.rate = 0.95;
