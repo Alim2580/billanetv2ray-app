@@ -1,1 +1,449 @@
-ok
+<!DOCTYPE html>
+<html lang="en" translate="no" class="notranslate">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="google" content="notranslate">
+    <title>AA Tunnel VIP - Secure Encrypted Tunnel</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        body {
+            background-color: #070913;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+
+        /* --- ব্যাকগ্রাউন্ড মার্বেল বা বল অ্যানিমেশন --- */
+        .bg-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .marble {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.25;
+            filter: blur(1px);
+            animation: floatMarbles 12s infinite alternate ease-in-out;
+        }
+        .marble:nth-child(1) {
+            width: 80px; height: 80px; background: #00d2ff; top: 15%; left: 10%;
+            animation-duration: 10s;
+        }
+        .marble:nth-child(2) {
+            width: 110px; height: 110px; background: #3a7bd5; top: 70%; left: 80%;
+            animation-duration: 14s; animation-delay: -2s;
+        }
+        .marble:nth-child(3) {
+            width: 65px; height: 65px; background: #00ffcc; top: 40%; left: 85%;
+            animation-duration: 9s; animation-delay: -4s;
+        }
+        .marble:nth-child(4) {
+            width: 95px; height: 95px; background: #0088ff; top: 80%; left: 15%;
+            animation-duration: 16s; animation-delay: -1s;
+        }
+        .marble:nth-child(5) {
+            width: 70px; height: 70px; background: #3a7bd5; top: 25%; left: 75%;
+            animation-duration: 11s; animation-delay: -3s;
+        }
+
+        @keyframes floatMarbles {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -50px) scale(1.1); }
+            66% { transform: translate(-30px, 30px) scale(0.95); }
+            100% { transform: translate(20px, 40px) scale(1.05); }
+        }
+
+        /* --- উপর থেকে নিচে নেমে আসা লাইট এফেক্ট --- */
+        .falling-light {
+            position: absolute;
+            top: -150px;
+            left: 50%;
+            width: 3px;
+            height: 150px;
+            background: linear-gradient(to bottom, rgba(0, 210, 255, 0), #00d2ff, #ffffff);
+            box-shadow: 0 0 15px #00d2ff, 0 0 30px #00d2ff;
+            opacity: 0.8;
+            z-index: 1;
+            pointer-events: none;
+            animation: fallLight 4s infinite cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .falling-light:nth-child(7) {
+            left: 20%;
+            animation-duration: 5s;
+            animation-delay: 1.5s;
+        }
+        .falling-light:nth-child(8) {
+            left: 80%;
+            animation-duration: 6s;
+            animation-delay: 2.5s;
+        }
+
+        @keyframes fallLight {
+            0% {
+                top: -150px;
+                opacity: 0;
+            }
+            30% {
+                opacity: 1;
+            }
+            70% {
+                opacity: 0.8;
+            }
+            100% {
+                top: 100vh;
+                opacity: 0;
+            }
+        }
+        
+        .container {
+            position: relative;
+            background: rgba(13, 22, 38, 0.92);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 210, 255, 0.15);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 440px;
+            max-height: 96vh;
+            padding: 24px 18px 22px 18px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 150, 255, 0.15);
+            overflow-y: auto;
+            z-index: 5;
+        }
+
+        .mic-toggle {
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            background: rgba(5, 10, 20, 0.7);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            color: #00d2ff;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 13px;
+            transition: all 0.2s ease;
+        }
+        .mic-toggle:hover {
+            background: rgba(0, 210, 255, 0.2);
+        }
+        .mic-toggle.muted {
+            border-color: rgba(255, 75, 75, 0.3);
+            color: #ff4b4b;
+        }
+
+        /* VIP Logo & Theme */
+        .logo-area-vip {
+            width: 82px;
+            height: 82px;
+            margin: 0 auto 12px auto;
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 25px rgba(0, 210, 255, 0.5);
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+        }
+        .logo-area-vip img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .title-vip {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            margin-bottom: 3px;
+            color: #00d2ff;
+            text-shadow: 0 0 12px rgba(0, 210, 255, 0.4);
+        }
+        .subtitle-vip {
+            font-size: 9.5px;
+            color: #94a3b8;
+            letter-spacing: 2.2px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .btn-download-vip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: linear-gradient(135deg, rgba(0, 210, 255, 0.15), rgba(58, 123, 213, 0.2));
+            border: 2px solid #00d2ff;
+            color: #00d2ff;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 14px;
+            letter-spacing: 1px;
+            box-shadow: inset 0 0 15px rgba(0, 210, 255, 0.2), 0 0 15px rgba(0, 210, 255, 0.2);
+            transition: all 0.2s ease;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+        .btn-download-vip:hover {
+            background: rgba(0, 210, 255, 0.25);
+            box-shadow: inset 0 0 20px rgba(0, 210, 255, 0.4), 0 0 25px rgba(0, 210, 255, 0.4);
+        }
+        .btn-download-vip:active, .btn-download-vip.processing {
+            transform: scale(0.96);
+            background: rgba(0, 210, 255, 0.35);
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(5, 10, 20, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 9px 10px;
+            margin-bottom: 12px;
+            font-size: 9px;
+            color: #64748b;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .status-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            flex-shrink: 0;
+        }
+        
+        .status-line {
+            flex-grow: 1;
+            height: 2px;
+            background: rgba(56, 189, 248, 0.15);
+            margin: 0 6px;
+            position: relative;
+            overflow: hidden;
+        }
+        .status-line::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #00d2ff, #3a7bd5, transparent);
+            animation: moveLight 2s infinite linear;
+        }
+        @keyframes moveLight {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .info-card {
+            background: rgba(5, 10, 20, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 10px 4px;
+            text-align: center;
+        }
+        .info-card .icon {
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+        .info-card .label {
+            font-size: 8px;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+            font-weight: 700;
+        }
+        .info-card .value {
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .helper-text {
+            font-size: 9px;
+            color: #64748b;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+        .footer-brand {
+            font-size: 8px;
+            color: #475569;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 8px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="notranslate">
+
+    <div class="bg-animation">
+        <div class="marble"></div>
+        <div class="marble"></div>
+        <div class="marble"></div>
+        <div class="marble"></div>
+        <div class="marble"></div>
+        <div class="falling-light"></div>
+        <div class="falling-light"></div>
+        <div class="falling-light"></div>
+    </div>
+
+    <div class="container notranslate">
+        <button class="mic-toggle" id="micToggleBtn" title="Voice On/Off">🔊</button>
+
+        <div class="logo-area-vip">
+            <img src="logo1.png" alt="AA Tunnel VIP">
+        </div>
+        <h1 class="title-vip">AA TUNNEL VIP</h1>
+        <div class="subtitle-vip">SECURE ENCRYPTED TUNNEL</div>
+
+        <div class="status-bar">
+            <div class="status-node"><span>📱</span><span>CLIENT</span></div>
+            <div class="status-line"></div>
+            <div class="status-node" style="color: #00d2ff;"><span>🛡️</span><span style="font-weight: 700;">V2RAY CORE</span></div>
+            <div class="status-line"></div>
+            <div class="status-node"><span>🌐</span><span>WEB</span></div>
+        </div>
+
+        <div class="info-cards">
+            <div class="info-card">
+                <div class="icon">📦</div>
+                <div class="label">SIZE</div>
+                <div class="value">87.56 MB</div>
+            </div>
+            <div class="info-card">
+                <div class="icon">📥</div>
+                <div class="label">DOWNLOADS</div>
+                <div class="value" id="downloadCountVip">Loading...</div>
+            </div>
+            <div class="info-card">
+                <div class="icon">📅</div>
+                <div class="label">RELEASED</div>
+                <div class="value" style="font-size: 9px;">May 19, 2026</div>
+            </div>
+        </div>
+
+        <a href="aa-tunnel-vip.apk" class="btn-download-vip" id="downloadBtnVip" onclick="incrementDownload()">
+            <span>🤖</span> DOWNLOAD VIP APK
+        </a>
+
+        <div class="helper-text">• TAP THE BUTTON ABOVE TO DOWNLOAD •</div>
+
+        <div class="footer-brand">
+            ⚡ BUILD BY BAHAR IT
+        </div>
+    </div>
+
+    
+    <script>
+        let downloadData = {"vip":5234};
+        document.getElementById('downloadCountVip').textContent = downloadData.vip.toLocaleString();
+
+        function incrementDownload() {
+            fetch('?action=download')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('downloadCountVip').textContent = data.vip.toLocaleString();
+                });
+
+            const btn = document.getElementById('downloadBtnVip');
+            btn.classList.add('processing');
+            setTimeout(() => btn.classList.remove('processing'), 300);
+        }
+
+        const micToggleBtn = document.getElementById('micToggleBtn');
+        let isVoiceMuted = localStorage.getItem('voiceMuted') === 'true';
+
+        function updateMicButton() {
+            if (isVoiceMuted) {
+                micToggleBtn.textContent = '🔇';
+                micToggleBtn.classList.add('muted');
+            } else {
+                micToggleBtn.textContent = '🔊';
+                micToggleBtn.classList.remove('muted');
+            }
+        }
+        updateMicButton();
+
+        micToggleBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            isVoiceMuted = !isVoiceMuted;
+            localStorage.setItem('voiceMuted', isVoiceMuted);
+            updateMicButton();
+
+            if (isVoiceMuted) {
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            } else {
+                playHindiWelcome();
+            }
+        });
+
+        function playHindiWelcome() {
+            if (isVoiceMuted) return;
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const welcomeText = "Hamare VPN ko istemal karne ke liye aapka bahut-bahut swagat hai. Dhanyawad!";
+                const utterance = new SpeechSynthesisUtterance(welcomeText);
+                utterance.lang = 'hi-IN';
+                utterance.rate = 0.95;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        let hasWelcomed = false;
+        document.body.addEventListener('click', function() {
+            if (!hasWelcomed && !isVoiceMuted) {
+                playHindiWelcome();
+                hasWelcomed = true;
+            }
+        }, { once: true });
+    </script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"3fffc2af3d184503a11b0766661a6e73","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
